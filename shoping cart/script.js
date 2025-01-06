@@ -5,13 +5,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const empty = document.getElementById("empty-cart");
   const totalpricedisplay = document.getElementById("total-price");
   const checkout = document.getElementById("checkout-btn");
+  const removeitem = document.getElementById("remove-item-btn");
   const products = [
     { id: 1, name: "Product 1", price: 5.56 },
     { id: 2, name: "Product 2", price: 15.88 },
     { id: 3, name: "Product 3", price: 51.03 },
     { id: 4, name: "Product 4", price: 42.33 },
   ];
-  const cart = [];
+  let cart = JSON.parse(localStorage.getItem("products")) || [];
+  rendercart();
   //we have to display the products we can do that by running the loop over the products
   //and containing them in a display div and then showing that div
   products.forEach((product) => {
@@ -39,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function addtocart(product) {
     cart.push(product);
     //console.log(cart);
+    savecart();
     rendercart();
   }
   function rendercart() {
@@ -50,22 +53,26 @@ document.addEventListener("DOMContentLoaded", () => {
       cart.forEach((item) => {
         totalprice += item.price;
         const cartitem = document.createElement("div");
-
         cartitem.innerHTML = `
         <span>${item.name} - $${item.price.toFixed(2)}</span>`;
         //this html will not have any effect it will just be flaoting around
         //so we have to attach it
         cartitems.appendChild(cartitem);
-        totalpricedisplay.textContent = `${totalprice.toFixed(2)}`;
       });
+      totalpricedisplay.textContent = `${totalprice.toFixed(2)}`;
     } else {
       empty.classList.remove("hidden");
       carttotal.classList.add("hidden");
     }
   }
+
   checkout.addEventListener("click", () => {
     cart.length = 0;
     alert("Checkout Successful");
     rendercart();
   });
+  
+  function savecart() {
+    localStorage.setItem("products", JSON.stringify(cart));
+  }
 });
